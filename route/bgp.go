@@ -39,6 +39,11 @@ func (b *BGPPath) Compare(c *BGPPath) int8 {
 		return -1
 	}
 
+	/*
+	 * 9.1.2.2.  Breaking Ties (Phase 2)
+	 */
+
+	// a)
 	if c.ASPathLen > b.ASPathLen {
 		return 1
 	}
@@ -47,6 +52,7 @@ func (b *BGPPath) Compare(c *BGPPath) int8 {
 		return -1
 	}
 
+	// b)
 	if c.Origin > b.Origin {
 		return 1
 	}
@@ -55,6 +61,7 @@ func (b *BGPPath) Compare(c *BGPPath) int8 {
 		return -1
 	}
 
+	// c)
 	if c.MED > b.MED {
 		return 1
 	}
@@ -63,6 +70,18 @@ func (b *BGPPath) Compare(c *BGPPath) int8 {
 		return -1
 	}
 
+	// d)
+	if c.EBGP && !b.EBGP {
+		return -1
+	}
+
+	if !c.EBGP && b.EBGP {
+		return 1
+	}
+
+	// e) TODO: interiour cost (hello IS-IS and OSPF)
+
+	// f)
 	if c.BGPIdentifier < b.BGPIdentifier {
 		return 1
 	}
@@ -71,6 +90,7 @@ func (b *BGPPath) Compare(c *BGPPath) int8 {
 		return -1
 	}
 
+	// g)
 	if c.Source < b.Source {
 		return 1
 	}
